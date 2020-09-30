@@ -9,6 +9,25 @@
       <div class="user-profile__follower-count">
         <strong>Followers: </strong> {{ followers }}
       </div>
+      <!-- @submit.prevent="" adds preventDefault() plus gives a function to run in its place (found in methods) -->
+      <form class="user-profile__create-twoot" @submit.prevent="createNewTwoot">
+        <label for="newTwoot"><strong>New Twoot</strong></label>
+        <textarea id="newTwoot" rows="4" v-model="newTwootContent"></textarea>
+        <div class="user-profile__create-twoot-type">
+          <label for="newTwootType"><strong>Type: </strong></label>
+          <!-- v-model links the select to the selectedTwootType value in data() -->
+          <select id="newTwootType" v-model="selectedTwootType">
+            <!-- colon tells us that we are referencing variables/js instead of just plain string text -->
+            <option
+              :value="option.value"
+              v-for="(option, index) in twootTypes"
+              :key="index"
+              >{{ option.name }}
+            </option></select
+          >
+        </div>
+        <button>Twoot</button>
+      </form>
     </div>
 
     <!-- <CreateTwootPanel @add-twoot="addTwoot" /> -->
@@ -37,6 +56,12 @@ export default {
   components: { TwootItem },
   data() {
     return {
+      newTwootContent: "",
+      selectedTwootType: "instant",
+      twootTypes: [
+        { value: "draft", name: "Draft" },
+        { value: "instant", name: "Instant Twoot" },
+      ],
       followers: 0,
       user: {
         id: 1,
@@ -66,6 +91,15 @@ export default {
     },
   },
   methods: {
+    createNewTwoot() {
+      if (this.newTwootContent && this.selectedTwootType !== "draft") {
+        this.user.twoots.unshift({
+          id: this.user.twoots.length + 1,
+          content: this.newTwootContent,
+        });
+      }
+      this.newTwootContent = "";
+    },
     followUser() {
       this.followers++;
     },
@@ -123,12 +157,17 @@ export default {
       margin-right: auto;
       padding: 0 10px;
       font-weight: bold;
+      margin-bottom: 20px;
     }
   }
   .user-profile__twoots-wrapper {
     display: grid;
     grid-gap: 10px;
-    margin-bottom: auto;
   }
+}
+.user-profile__create-twoot {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
 }
 </style>
