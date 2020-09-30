@@ -14,13 +14,14 @@
     <!-- <CreateTwootPanel @add-twoot="addTwoot" /> -->
     <div class="user-profile__twoots-wrapper">
       <!-- v-for="" render by iterating through list (here the list of twoots) -->
-      <div
+      <TwootItem
         class="user-profile__twoot"
         v-for="twoot in user.twoots"
         :key="twoot.id"
-      >
-        {{ twoot.content }}
-      </div>
+        :username="user.username"
+        :twoot="twoot"
+        @favorite="toggleFavorite"
+      />
     </div>
   </div>
 </template>
@@ -29,10 +30,11 @@
 // import { reactive, computed } from "vue";
 // import { useRoute } from "vue-router";
 // import { users } from "../assets/users";
-// import TwootItem from "../components/TwootItem";
+import TwootItem from "./TwootItem";
 // import CreateTwootPanel from "../components/CreateTwootPanel";
 export default {
   name: "UserProfile",
+  components: { TwootItem },
   data() {
     return {
       followers: 0,
@@ -46,7 +48,7 @@ export default {
         twoots: [
           { id: 1, content: "Let's dance!" },
           { id: 2, content: "Pizza is awesome!" },
-          { id: 2, content: "What's the meaning of life?" },
+          { id: 3, content: "What's the meaning of life?" },
         ],
       },
     };
@@ -66,6 +68,9 @@ export default {
   methods: {
     followUser() {
       this.followers++;
+    },
+    toggleFavorite(id) {
+      console.log(`Favorited tweet #${id}`);
     },
   },
   mounted() {
